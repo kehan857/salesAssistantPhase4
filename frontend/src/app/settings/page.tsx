@@ -118,9 +118,8 @@ export default function Settings() {
                   </div>
                   <div className="space-y-2 md:col-span-2">
                     <label className="text-sm font-medium">个人简介</label>
-                    <Input
-                      as="textarea"
-                      className="min-h-[80px]"
+                    <textarea
+                      className="flex min-h-[80px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                       defaultValue="专注于B2B销售，擅长客户关系维护"
                     />
                   </div>

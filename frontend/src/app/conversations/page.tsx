@@ -231,18 +231,17 @@ export default function Conversations() {
       <div className="w-96 overflow-y-auto custom-scrollbar">
         {selectedConversation && (
           <CopilotSidebar
-            conversationId={selectedConversationId}
             onAdoptSuggestion={handleAdoptSuggestion}
           />
         )}
       </div>
 
       {/* 弹窗 */}
-      <AddConversationDialog
+      {/* <AddConversationDialog
         open={addDialogOpen}
         onOpenChange={setAddDialogOpen}
         onSave={handleAddConversation}
-      />
+      /> */}
       <ExportDialog
         open={exportDialogOpen}
         onOpenChange={setExportDialogOpen}

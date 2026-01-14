@@ -21,7 +21,7 @@ import {
 } from 'lucide-react'
 
 export default function Help() {
-   = useState('all')
+  const [activeCategory, setActiveCategory] = useState('all')
   const [expandedFaq, setExpandedFaq] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
 

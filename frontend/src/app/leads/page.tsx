@@ -253,7 +253,7 @@ export default function Leads() {
                 </div>
 
                 {/* 7天培育计划 */}
-                {selectedLead.nurtureDay && (
+                {selectedLead.nurtureDay || 0 && (
                   <div>
                     <div className="flex items-center justify-between mb-3">
                       <div className="text-sm font-medium">7天培育计划</div>
@@ -271,14 +271,14 @@ export default function Leads() {
                         <div
                           key={day}
                           className={`flex items-center gap-3 p-2 rounded-lg border ${
-                            day === selectedLead.nurtureDay
+                            day === selectedLead.nurtureDay || 0
                               ? 'bg-primary/10 border-primary'
-                              : day < selectedLead.nurtureDay
+                              : day < selectedLead.nurtureDay || 0
                               ? 'bg-success/10 border-success/30'
                               : 'bg-muted/30 border-border'
                           }`}
                         >
-                          {day < selectedLead.nurtureDay ? (
+                          {day < selectedLead.nurtureDay || 0 ? (
                             <CheckCircle2 className="h-4 w-4 text-success flex-shrink-0" />
                           ) : (
                             <div className="h-4 w-4 rounded-full border-2 border-muted-foreground/30 flex-shrink-0" />
@@ -295,7 +295,7 @@ export default function Leads() {
                               {day === 7 && '最后推动或归档'}
                             </div>
                           </div>
-                          {day === selectedLead.nurtureDay && (
+                          {day === selectedLead.nurtureDay || 0 && (
                             <Badge variant="default" className="text-xs">进行中</Badge>
                           )}
                         </div>

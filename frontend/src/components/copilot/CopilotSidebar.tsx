@@ -10,7 +10,8 @@ interface CopilotSidebarProps {
   onAdoptSuggestion?: (content: string) => void
 }
 
-export default function CopilotSidebar({ const [inputText, setInputText] = useState('')
+export default function CopilotSidebar({ onAdoptSuggestion }: CopilotSidebarProps) {
+  const [inputText, setInputText] = useState('')
   const [polishedText, setPolishedText] = useState('')
   const [selectedTone, setSelectedTone] = useState<'professional' | 'friendly' | 'urgent'>('professional')
   const [copiedId, setCopiedId] = useState<string | null>(null)
