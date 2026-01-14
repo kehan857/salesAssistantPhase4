@@ -6,6 +6,13 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.3-61DAFB)](https://react.dev/)
 [![NestJS](https://img.shields.io/badge/NestJS-10.3-E0234E)](https://nestjs.com/)
+[![GitHub Pages](https://img.shields.io/badge/GitHub-Pages-121013?logo=github)](https://kehan857.github.io/salesAssistantPhase4/)
+
+## 🌐 在线预览
+
+**[GitHub Pages 预览](https://kehan857.github.io/salesAssistantPhase4/)**
+
+前端Demo已部署到GitHub Pages，可以直接访问体验！
 
 ---
 
