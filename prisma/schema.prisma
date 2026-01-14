@@ -1,0 +1,395 @@
+// Prisma Schema - 销售AI助手四期
+// 数据库模型定义
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+}
+
+// =====================================================
+// 用户与认证
+// =====================================================
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  name          String?
+  avatar        String?
+  role          UserRole  @default(SALES)
+  isActive      Boolean   @default(true)
+  lastLoginAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // 关系
+  conversations Conversation[]
+  leads         Lead[]
+  feedbacks     FeedbackData[]
+
+  @@map("users")
+}
+
+enum UserRole {
+  ADMIN
+  SALES_MANAGER
+  SALES
+}
+
+// =====================================================
+// 对话与消息
+// =====================================================
+
+model Conversation {
+  id             String             @id @default(uuid())
+  leadId         String
+  lead           Lead               @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  channel        ChannelType
+  messages       Json               @default("[]")
+  messageCount   Int                @default(0)
+  lastMessageAt  DateTime?
+
+  // AI分析结果
+  bantData       Json?
+  sentimentScore Decimal?           @db.Decimal(3, 2)
+  sentimentHistory Json?            @default("[]")
+  riskLevel      RiskLevel?
+  riskFactors    Json?              @default("[]")
+
+  // 竞品信息
+  competitors    Json?              @default("[]")
+
+  status         ConversationStatus @default(ACTIVE)
+  assignedToId   String?
+  assignedTo     User?              @relation(fields: [assignedToId], references: [id])
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  // 关系
+  feedbacks      FeedbackData[]
+
+  @@index([leadId])
+  @@index([status])
+  @@index([sentimentScore])
+  @@index([riskLevel])
+  @@index([lastMessageAt])
+  @@map("conversations")
+}
+
+enum ChannelType {
+  WECHAT
+  EMAIL
+  PHONE
+  WEBCHAT
+  WHATSAPP
+}
+
+enum ConversationStatus {
+  ACTIVE
+  ARCHIVED
+  CONVERTED
+  LOST
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+// =====================================================
+// 线索管理
+// =====================================================
+
+model Lead {
+  id              String       @id @default(uuid())
+  name            String
+  company         String?
+  title           String?
+  email           String?
+  phone           String?
+  avatar          String?
+
+  // 来源和状态
+  source          LeadSource   @default(OTHER)
+  status          LeadStatus   @default(NEW)
+  stage           String?      // 销售漏斗阶段
+
+  // 分配
+  assignedToId    String?
+  assignedTo      User?        @relation(fields: [assignedToId], references: [id])
+
+  // 评分和标签
+  score           Int          @default(0)
+  tags            String[]     @default([])
+  customFields    Json?        @default("{}")
+
+  // 培育计划
+  nurturePlan     NurturePlan?
+
+  // 时间追踪
+  firstContactAt  DateTime?
+  lastContactAt   DateTime?
+  convertedAt     DateTime?
+  lostAt          DateTime?
+
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  // 关系
+  conversations   Conversation[]
+
+  @@index([status])
+  @@index([score])
+  @@index([assignedToId])
+  @@index([source])
+  @@map("leads")
+}
+
+enum LeadSource {
+  WEBSITE
+  WECHAT
+  REFERRAL
+  EVENT
+  ADVERTISING
+  COLD_CALL
+  PARTNER
+  OTHER
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PROPOSAL
+  NEGOTIATION
+  CONVERTED
+  LOST
+}
+
+// =====================================================
+// 培育计划
+// =====================================================
+
+model NurturePlan {
+  id              String           @id @default(uuid())
+  leadId          String           @unique
+  lead            Lead             @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  currentDay      Int              @default(1)
+  status          NurtureStatus    @default(ACTIVE)
+
+  // 行为追踪
+  interactions    Json?            @default("[]")
+  clicks          Json?            @default("[]")
+  emailOpens      Int              @default(0)
+
+  // 时间管理
+  lastActionAt    DateTime?
+  nextActionAt    DateTime?
+  startedAt       DateTime         @default(now())
+  completedAt     DateTime?
+  estimatedEndDate DateTime?
+
+  // 自定义配置
+  config          Json?            @default("{}")
+  metadata        Json?            @default("{}")
+
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([status])
+  @@index([nextActionAt])
+  @@map("nurture_plans")
+}
+
+enum NurtureStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  CANCELLED
+}
+
+// =====================================================
+// 知识库
+// =====================================================
+
+model KnowledgeItem {
+  id              String         @id @default(uuid())
+  question        String
+  answer          String
+  category        String?
+  tags            String[]       @default([])
+
+  // 向量搜索
+  embedding       Unsupported(Float[])?  @optional
+
+  // 反馈和评分
+  feedbackScore   Int            @default(0)
+  usageCount      Int            @default(0)
+  helpfulCount    Int            @default(0)
+
+  // 新鲜度
+  freshnessScore  Int            @default(100)
+  lastUsedAt      DateTime?
+
+  // 状态
+  status          KnowledgeStatus @default(DRAFT)
+
+  // 审核流程
+  reviewedBy      String?
+  reviewedAt      DateTime?
+  reviewComments  String?
+
+  // 创建者
+  createdBy       String
+  updatedBy       String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([status])
+  @@index([category])
+  @@index([freshnessScore])
+  @@map("knowledge_items")
+}
+
+enum KnowledgeStatus {
+  DRAFT
+  PENDING_REVIEW
+  PUBLISHED
+  ARCHIVED
+}
+
+// =====================================================
+// AI反馈与训练
+// =====================================================
+
+model FeedbackData {
+  id              String         @id @default(uuid())
+
+  // 关联
+  conversationId  String?
+  conversation    Conversation?  @relation(fields: [conversationId], references: [id])
+  suggestionId    String?
+  userId          String?
+  user            User?          @relation(fields: [userId], references: [id])
+
+  // 反馈内容
+  actionType      FeedbackAction
+  originalContent String?        @db.Text
+  modifiedContent String?        @db.Text
+  rating          Int?           // 1-5星评分
+
+  // AI模型版本
+  modelVersion    String?
+  promptTemplate  String?
+
+  // 元数据
+  metadata        Json?
+  createdAt       DateTime       @default(now())
+
+  @@index([actionType])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("feedback_data")
+}
+
+enum FeedbackAction {
+  ACCEPT
+  MODIFY
+  REJECT
+  FLAG
+  REPORT
+}
+
+// =====================================================
+// 系统日志与同步
+// =====================================================
+
+model SyncLog {
+  id              String      @id @default(uuid())
+  entityType      String      // lead, conversation, knowledge
+  entityId        String
+  action          SyncAction
+  direction       SyncDirection
+  status          SyncStatus
+  errorMessage    String?     @db.Text
+  metadata        Json?
+  createdAt       DateTime    @default(now())
+
+  @@index([entityType, entityId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("sync_logs")
+}
+
+enum SyncAction {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+enum SyncDirection {
+  INBOUND   // 外部系统 → 本地
+  OUTBOUND  // 本地 → 外部系统
+}
+
+enum SyncStatus {
+  SUCCESS
+  FAILED
+  PENDING
+  RETRYING
+}
+
+// =====================================================
+// 任务队列表
+// =====================================================
+
+model JobLog {
+  id              String      @id @default(uuid())
+  queueName       String
+  jobId           String
+  jobName         String
+  status          JobStatus
+  result          Json?
+  error           String?     @db.Text
+  startedAt       DateTime?
+  completedAt     DateTime?
+  createdAt       DateTime    @default(now())
+
+  @@index([queueName, status])
+  @@index([createdAt])
+  @@map("job_logs")
+}
+
+enum JobStatus {
+  PENDING
+  ACTIVE
+  COMPLETED
+  FAILED
+  DELAYED
+}
+
+// =====================================================
+// 分析和统计
+// =====================================================
+
+model AnalyticsEvent {
+  id              String      @id @default(uuid())
+  eventType       String
+  eventName       String
+  userId          String?
+  sessionId       String?
+  properties      Json?       @default("{}")
+  createdAt       DateTime    @default(now())
+
+  @@index([eventType])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("analytics_events")
+}
