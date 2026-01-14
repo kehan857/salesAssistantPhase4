@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
@@ -7,12 +7,10 @@ import { Bot, Brain, TrendingUp, AlertTriangle, Send, Sparkles, Copy } from 'luc
 import { mockAISuggestions, mockBANTData } from '@/lib/mock-data'
 
 interface CopilotSidebarProps {
-  conversationId: string
   onAdoptSuggestion?: (content: string) => void
 }
 
-export default function CopilotSidebar({ conversationId, onAdoptSuggestion }: CopilotSidebarProps) {
-  const [inputText, setInputText] = useState('')
+export default function CopilotSidebar({ const [inputText, setInputText] = useState('')
   const [polishedText, setPolishedText] = useState('')
   const [selectedTone, setSelectedTone] = useState<'professional' | 'friendly' | 'urgent'>('professional')
   const [copiedId, setCopiedId] = useState<string | null>(null)

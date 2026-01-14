@@ -15,13 +15,10 @@ import {
   Brain,
   Zap,
   Sliders,
-  Play,
-  Pause,
   Edit,
   Trash2,
   BarChart3,
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
 
 export default function Agents() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -94,13 +91,6 @@ export default function Agents() {
       },
       createdAt: '2024-01-05',
     },
-  ]
-
-  // 模型配置项
-  const modelProviders = [
-    { id: 'openai', name: 'OpenAI', models: ['gpt-4o', 'gpt-4-turbo', 'gpt-3.5-turbo'] },
-    { id: 'claude', name: 'Anthropic', models: ['claude-3-5-sonnet', 'claude-3-opus', 'claude-3-haiku'] },
-    { id: 'custom', name: '自托管', models: ['llama-3.1-70b', 'qwen-72b'] },
   ]
 
   return (

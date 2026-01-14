@@ -13,7 +13,6 @@ import {
   Phone,
   Mail,
   Building,
-  Tag,
   TrendingUp,
   AlertTriangle,
   Calendar,

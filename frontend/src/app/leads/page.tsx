@@ -13,7 +13,6 @@ import {
   Phone,
   Calendar,
   TrendingUp,
-  Clock,
   CheckCircle2,
   Download,
 } from 'lucide-react'

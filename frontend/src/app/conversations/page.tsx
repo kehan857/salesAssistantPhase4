@@ -5,10 +5,9 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { formatRelativeTime } from '@/lib/utils'
 import { mockConversations } from '@/lib/mock-data'
-import { MessageSquare, Search, MoreVertical, Phone, Mail, Video, Plus, Download } from 'lucide-react'
+import { MessageSquare, Search, MoreVertical, Phone, Mail, Video } from 'lucide-react'
 import CopilotSidebar from '@/components/copilot/CopilotSidebar'
 import ChatInput from '@/components/copilot/ChatInput'
-import AddConversationDialog from '@/components/dialogs/AddConversationDialog'
 import ExportDialog from '@/components/dialogs/ExportDialog'
 
 export default function Conversations() {

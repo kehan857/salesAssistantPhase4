@@ -1,10 +1,12 @@
 # Dependencies
 node_modules/
 bower_components/
+frontend/node_modules/
 
 # Production
 dist/
 build/
+frontend/dist/
 *.log
 
 # Environment variables

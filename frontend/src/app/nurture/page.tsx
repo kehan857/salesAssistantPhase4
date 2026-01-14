@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { mockLeads } from '@/lib/mock-data'
 import {
   Calendar,
   Clock,
@@ -13,9 +12,7 @@ import {
   Pause,
   Settings,
   TrendingUp,
-  Mail,
   MessageSquare,
-  Phone,
   FileText,
   Sparkles,
   Eye,
@@ -409,7 +406,7 @@ export default function Nurture() {
       <NurturePlanDialog
         open={planDialogOpen}
         onOpenChange={setPlanDialogOpen}
-        onSave={(plan) => console.log('创建培育计划:', plan)}
+        onApply={() => console.log('创建培育计划')}
       />
     </div>
   )
